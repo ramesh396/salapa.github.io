@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🧠 Memory Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="/static/manifest.json" />
+  <link rel="apple-touch-icon" href="/static/icons/icon-192.png" />
+  <meta name="theme-color" content="#ff8c00" />
+
+  <style>
+    /* ================= RESET ================= */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ================= THEME ================= */
+    :root {
+      --bg-main: #1a0d08;
+      --bg-panel: #24120a;
+      --bg-card: #120805;
+
+      --border-soft: rgba(255, 180, 120, 0.18);
+
+      --primary: #ff9f4a;
+      --primary-hover: #ff8a1f;
+      --green: #22c55e;
+
+      --text-main: #f5ede7;
+      --text-muted: #d1b5a0;
+    }
+
+    /* ================= BASE ================= */
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      background: radial-gradient(circle at top, #2a140a, #120805 65%);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    /* ================= CONTAINER ================= */
+    .container {
+      max-width: 860px;
+      margin: auto;
+      padding: 28px 14px 110px;
+    }
+
+    /* ================= TOP LINK ================= */
+    .back {
+      display: inline-block;
+      margin-bottom: 10px;
+      text-decoration: none;
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .back:hover {
+      color: var(--text-main);
+    }
+
+    /* ================= HEADER ================= */
+    h1 {
+      font-size: 1.55rem;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    /* ================= INSTRUCTION ================= */
+    .instruction {
+      background: rgba(255,159,74,0.10);
+      border-left: 4px solid var(--primary);
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 13px;
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+
+    /* ================= SETUP ================= */
+    .setup {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 18px;
+    }
+
+    .label {
+      display: block;
+      font-weight: 800;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .source {
+      width: 100%;
+      min-height: 120px;
+      resize: vertical;
+      background: var(--bg-panel);
+      color: var(--text-main);
+      border: 1px solid var(--border-soft);
+      border-radius: 14px;
+      padding: 12px 12px;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+
+    .source:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .setup-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border-soft);
+      background: rgba(255,255,255,0.05);
+      color: var(--text-main);
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      border-color: rgba(255, 180, 120, 0.35);
+    }
+
+    .btn.secondary {
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .hint {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ================= QUESTION CARD ================= */
+    .question-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+
+    /* ================= QUESTION ================= */
+    .question-title {
+      font-weight: 800;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    /* ================= TEXTAREA ================= */
+    .answer {
+      width: 100%;
+      min-height: 90px;
+      background: var(--bg-panel);
+      color: var(--text-main);
+      border: 1px solid var(--border-soft);
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 14px;
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .answer:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    /* ================= VOICE BUTTON ================= */
+    .voice-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border-soft);
+      background: rgba(255,255,255,0.05);
+      color: var(--text-main);
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .voice-btn.active {
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+      color: #1a0d08;
+    }
+
+    /* ================= STICKY SUBMIT ================= */
+    .submit-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 14px;
+      background: var(--bg-panel);
+      border-top: 1px solid var(--border-soft);
+      box-shadow: 0 -12px 30px rgba(0,0,0,0.5);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      border-radius: 18px;
+      border: none;
+      font-size: 16px;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--green), #16a34a);
+      color: #052e16;
+      cursor: pointer;
+    }
+
+    .saved {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid var(--border-soft);
+      background: rgba(34,197,94,0.10);
+    }
+
+    .saved-title {
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+
+    .saved-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    /* ================= DESKTOP ================= */
+    @media (min-width: 768px) {
+      .container {
+        padding-bottom: 40px;
+      }
+
+      .submit-bar {
+        position: static;
+        box-shadow: none;
+        background: transparent;
+        padding: 0;
+        margin-top: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <a class="back" href="/">← Back to Home</a>
+
+    <h1>🧠 Memory Test</h1>
+    <p class="subtitle">Answer from memory. Don’t check notes.</p>
+
+    <div class="instruction">
+      🎤 <b>Voice input (optional)</b><br>
+      Tap <b>Record Answer</b> and speak clearly. (Works best in Chrome.)
+    </div>
+
+    <div class="setup">
+      <label class="label" for="questionSource">Questions (one per line)</label>
+      <textarea id="questionSource" class="source" spellcheck="false"></textarea>
+
+      <div class="setup-actions">
+        <button type="button" class="btn" id="loadQuestionsBtn">Load Questions</button>
+        <button type="button" class="btn secondary" id="loadSavedBtn">Load Saved</button>
+        <button type="button" class="btn secondary" id="clearSavedBtn">Clear Saved</button>
+      </div>
+
+      <p class="hint">Answers save locally in your browser (localStorage). Nothing is uploaded.</p>
+    </div>
+
+    <form id="memoryForm">
+      <div id="questions"></div>
+
+      <div class="submit-bar">
+        <button type="submit" class="submit-btn">✅ Save Answers</button>
+      </div>
+    </form>
+
+    <div id="saved" class="saved" hidden>
+      <div class="saved-title">Saved</div>
+      <p class="saved-subtitle">You can download a copy of your answers as JSON.</p>
+      <div class="setup-actions">
+        <button type="button" class="btn" id="downloadBtn">Download JSON</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "salapa_memory_test_latest";
+    const DEFAULT_QUESTIONS = [
+      "Explain the topic in your own words.",
+      "List 5 key points you remember.",
+      "Give one real-life example.",
+      "Write 3 possible exam questions from this topic."
+    ];
+
+    const questionSourceEl = document.getElementById("questionSource");
+    const questionsEl = document.getElementById("questions");
+    const memoryForm = document.getElementById("memoryForm");
+    const savedEl = document.getElementById("saved");
+    const loadQuestionsBtn = document.getElementById("loadQuestionsBtn");
+    const loadSavedBtn = document.getElementById("loadSavedBtn");
+    const clearSavedBtn = document.getElementById("clearSavedBtn");
+    const downloadBtn = document.getElementById("downloadBtn");
+
+    let lastSavedPayload = null;
+    let recognition = null;
+    let recognizingButton = null;
+
+    function parseQuestions(text) {
+      return text
+        .split("\n")
+        .map(line => line.trim())
+        .filter(Boolean);
+    }
+
+    function renderQuestions(questions, answers = []) {
+      stopVoice();
+      questionsEl.innerHTML = "";
+
+      if (questions.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "question-card";
+        empty.textContent = "Add questions above, then click “Load Questions”.";
+        questionsEl.appendChild(empty);
+        return;
+      }
+
+      questions.forEach((q, idx) => {
+        const card = document.createElement("div");
+        card.className = "question-card";
+
+        const title = document.createElement("div");
+        title.className = "question-title";
+        title.textContent = `Q${idx + 1}. ${q}`;
+
+        const textarea = document.createElement("textarea");
+        textarea.className = "answer";
+        textarea.placeholder = "Type or speak your answer...";
+        textarea.value = answers[idx] || "";
+
+        const voiceBtn = document.createElement("button");
+        voiceBtn.type = "button";
+        voiceBtn.className = "voice-btn";
+        voiceBtn.textContent = "🎙 Record Answer";
+        voiceBtn.addEventListener("click", () => toggleVoice(voiceBtn, textarea));
+
+        card.appendChild(title);
+        card.appendChild(textarea);
+        card.appendChild(voiceBtn);
+        questionsEl.appendChild(card);
+      });
+    }
+
+    function savePayload(payload) {
+      lastSavedPayload = payload;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      savedEl.hidden = false;
+      savedEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    function buildPayloadFromUI() {
+      const questions = parseQuestions(questionSourceEl.value);
+      const answers = Array.from(document.querySelectorAll("textarea.answer")).map(t => t.value || "");
+
+      return {
+        savedAt: new Date().toISOString(),
+        questions,
+        answers
+      };
+    }
+
+    function loadSavedPayload() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      try {
+        return JSON.parse(raw);
+      } catch {
+        return null;
+      }
+    }
+
+    function stopVoice() {
+      if (!recognition) return;
+      try {
+        recognition.onend = null;
+        recognition.stop();
+      } catch {}
+      recognition = null;
+      if (recognizingButton) {
+        recognizingButton.classList.remove("active");
+        recognizingButton.textContent = "🎙 Record Answer";
+      }
+      recognizingButton = null;
+    }
+
+    function toggleVoice(button, textarea) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("Voice input isn’t supported in this browser. Try Chrome on desktop.");
+        return;
+      }
+
+      if (recognition && recognizingButton === button) {
+        stopVoice();
+        return;
+      }
+
+      stopVoice();
+
+      recognition = new SpeechRecognition();
+      recognizingButton = button;
+
+      recognition.lang = navigator.language || "en-US";
+      recognition.interimResults = true;
+      recognition.continuous = false;
+
+      const prefix = textarea.value ? `${textarea.value.trim()}\n` : "";
+
+      button.classList.add("active");
+      button.textContent = "⏹ Stop Recording";
+
+      recognition.onresult = event => {
+        let transcript = "";
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
+        }
+        textarea.value = `${prefix}${transcript}`.trim();
+      };
+
+      recognition.onerror = () => {
+        // Keep existing text; user can type manually.
+      };
+
+      recognition.onend = () => {
+        if (recognizingButton) {
+          recognizingButton.classList.remove("active");
+          recognizingButton.textContent = "🎙 Record Answer";
+        }
+        recognition = null;
+        recognizingButton = null;
+      };
+
+      try {
+        recognition.start();
+      } catch {
+        stopVoice();
+      }
+    }
+
+    loadQuestionsBtn.addEventListener("click", () => {
+      const questions = parseQuestions(questionSourceEl.value);
+      renderQuestions(questions);
+    });
+
+    loadSavedBtn.addEventListener("click", () => {
+      const saved = loadSavedPayload();
+      if (!saved) {
+        alert("No saved answers found on this device.");
+        return;
+      }
+      questionSourceEl.value = (saved.questions || []).join("\n");
+      renderQuestions(saved.questions || [], saved.answers || []);
+      lastSavedPayload = saved;
+      savedEl.hidden = false;
+    });
+
+    clearSavedBtn.addEventListener("click", () => {
+      localStorage.removeItem(STORAGE_KEY);
+      lastSavedPayload = null;
+      savedEl.hidden = true;
+      alert("Saved answers cleared.");
+    });
+
+    downloadBtn.addEventListener("click", () => {
+      const payload = lastSavedPayload || buildPayloadFromUI();
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `salapa-memory-test-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    memoryForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const payload = buildPayloadFromUI();
+      if (!payload.questions.length) {
+        alert("Please add at least one question first.");
+        return;
+      }
+      savePayload(payload);
+    });
+
+    // Init
+    questionSourceEl.value = DEFAULT_QUESTIONS.join("\n");
+    renderQuestions(parseQuestions(questionSourceEl.value));
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/static/sw.js");
+    }
+  </script>
+</body>
+</html>
+

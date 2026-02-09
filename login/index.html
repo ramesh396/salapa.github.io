@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="manifest" href="/static/manifest.json" />
+  <link rel="apple-touch-icon" href="/static/icons/icon-192.png" />
+  <meta name="theme-color" content="#ff8c00" />
+  <title>Login • Salapa</title>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-main: #120907;
+      --bg-panel: #1a0f0b;
+      --primary: #ff9f4a;
+      --primary-hover: #ff8a1f;
+      --text-main: #f7efe9;
+      --text-muted: #c8a996;
+      --border-soft: rgba(255,176,120,0.12);
+    }
+
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      background: radial-gradient(circle at top, #241208 0%, var(--bg-main) 60%);
+      color: var(--text-main);
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 560px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-soft);
+      border-radius: 18px;
+      padding: 22px;
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    a.btn {
+      display: inline-block;
+      padding: 12px 16px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 800;
+      border: 1px solid var(--border-soft);
+      color: var(--text-main);
+      background: transparent;
+    }
+
+    a.btn.primary {
+      background: linear-gradient(135deg,#ffb066,#ff9f4a,#ff8a1f);
+      color: #2a1408;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Login (Static Demo)</h1>
+    <p>
+      This GitHub Pages site is a static preview. Login requires the full Salapa backend,
+      so it isn’t available here.
+    </p>
+
+    <div class="actions">
+      <a class="btn primary" href="/memory">Try Memory Test</a>
+      <a class="btn" href="/">Back to Home</a>
+    </div>
+  </div>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/static/sw.js");
+    }
+  </script>
+</body>
+</html>
+
